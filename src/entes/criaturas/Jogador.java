@@ -12,13 +12,12 @@ public class Jogador extends Criatura {
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
 		this.mapa = mapa;
 		this.teclado = teclado;
-		this.sprite = sprite;
+		this.sprite = sprite; // O sprite inicial pode ser passado no construtor
 	}
 
-	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite, int posicionX, int posicionY) {
-		this(mapa, teclado, sprite); 
-		this.teclado = teclado;
-		this.sprite = sprite;
+	public Jogador(Mapa mapa, Teclado teclado, int posicionX, int posicionY) {
+		// Chama o construtor anterior com um sprite padrão para iniciar
+		this(mapa, teclado, Sprite.JOGADOR_BAIXO);
 		this.x = posicionX;
 		this.y = posicionY;
 	}
@@ -48,100 +47,76 @@ public class Jogador extends Criatura {
 			desplazamientoX -= velocidadeMovimiento;
 		}
 		if (teclado.derecha) {
-			desplazamientoX += velocidadeMovimiento;
+			desplazamentoX += velocidadeMovimiento;
 		}
-		int resto = animacion % 40;
-		if (desplazamientoX != 0 || desplazamientoY != 0) {
-			mover(desplazamientoX, desplazamientoY);
+
+		if (desplazamentoX != 0 || desplazamientoY != 0) {
+			mover(desplazamentoX, desplazamientoY);
 			enMovimiento = true;
 		} else {
 			enMovimiento = false;
 		}
-		if (direccion == 'n') {
-			sprite = Sprite.ARRIBA0;
-			// Comentado no curso 50
-			// if (enMovimento) {
-			// if (animacion % 30 > 15) {
-			// sprite = Sprite.ARRIBA1;
-			// } else {
-			// sprite = Sprite.ARRIBA1;
-			// }
-			// }
-			// Fim comentado curso 50
-			if ((resto > 10) && (resto <= 20)) {
-				sprite = Sprite.ARRIBA0_CIRENE_VERMELHA;
-			} else if ((resto > 20) && (resto <= 30)) {
-				sprite = Sprite.ARRIBA0_CIRENA_BRANCA;
-			} else if (resto > 30) {
-				sprite = Sprite.ARRIBA0_CIRENE_AZUL;
+
+		int resto = animacion % 40;
+
+		if (direccion == 'n') { // Cima
+			if (enMovimiento) {
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_CIMA_1; // Usando sprite de animação como "cirene vermelha"
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_CIMA_2; // Usando sprite de animação como "cirene branca"
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_CIMA_1; // Usando sprite de animação como "cirene azul"
+				} else {
+					sprite = Sprite.JOGADOR_CIMA;
+				}
 			} else {
-				sprite = Sprite.ARRIBA0;
+				sprite = Sprite.JOGADOR_CIMA;
 			}
 		}
-		if (direccion == 's') {
-			sprite = Sprite.ABAJO0;
-			// Comentado no curso 50
-			// if (enMovimento) {
-			// if (animacion % 30 > 15) {
-			// sprite = Sprite.ABAJO0;
-			// } else {
-			// sprite = Sprite.ABAJO0;
-			// }
-			// }
-			// Fim comentado curso 50
-
-			if ((resto > 10) && (resto <= 20)) {
-				sprite = Sprite.ABAJO0_CIRENE_VERMELHA;
-			} else if ((resto > 20) && (resto <= 30)) {
-				sprite = Sprite.ABAJO0_CIRENA_BRANCA;
-			} else if (resto > 30) {
-				sprite = Sprite.ABAJO0_CIRENE_AZUL;
+		if (direccion == 's') { // Baixo
+			if (enMovimiento) {
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_BAIXO_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_BAIXO_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_BAIXO_1;
+				} else {
+					sprite = Sprite.JOGADOR_BAIXO;
+				}
 			} else {
-				sprite = Sprite.ABAJO0;
+				sprite = Sprite.JOGADOR_BAIXO;
 			}
 		}
-		if (direccion == 'o') {
-			sprite = Sprite.IZQUIERDA0;
-			// Comentado no curso 50
-			// if (enMovimento) {
-			// if (animacion % 30 > 15) {
-			// sprite = Sprite.IZQUIERDA0;
-			// } else {
-			// sprite = Sprite.IZQUIERDA0;
-			// }
-			// }
-			// Fim comentado curso 50
-
-			if ((resto > 10) && (resto <= 20)) {
-				sprite = Sprite.IZQUIERDA0_CIRENE_VERMELHA;
-			} else if ((resto > 20) && (resto <= 30)) {
-				sprite = Sprite.IZQUIERDA0_CIRENE_BRANCA;
-			} else if (resto > 30) {
-				sprite = Sprite.IZQUIERDA0_CIRENE_AZUL;
+		if (direccion == 'o') { // Esquerda
+			if (enMovimiento) {
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_ESQUERDA_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_ESQUERDA_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_ESQUERDA_1;
+				} else {
+					sprite = Sprite.JOGADOR_ESQUERDA;
+				}
 			} else {
-				sprite = Sprite.IZQUIERDA0;
+				sprite = Sprite.JOGADOR_ESQUERDA;
 			}
 		}
-		if (direccion == 'e') {
-			sprite = Sprite.DERECHA0;
-			// Comentado no curso 50
-			// if (enMovimento) {
-			// if (animacion % 30 > 15) {
-			// sprite = Sprite.DERECHA0;
-			// } else {
-			// sprite = Sprite.DERECHA0;
-			// }
-			// }
-			// Fim comentado curso 50
-
-			if ((resto > 10) && (resto <= 20)) {
-				sprite = Sprite.DERECHA0_CIRENE_VERMELHA;
-			} else if ((resto > 20) && (resto <= 30)) {
-				sprite = Sprite.DERECHA0_CIRENE_BRANCA;
-			} else if (resto > 30) {
-				sprite = Sprite.DERECHA0_CIRENE_AZUL;
+		if (direccion == 'e') { // Direita
+			if (enMovimiento) {
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_DIREITA_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_DIREITA_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_DIREITA_1;
+				} else {
+					sprite = Sprite.JOGADOR_DIREITA;
+				}
 			} else {
-				sprite = Sprite.DERECHA0;
+				sprite = Sprite.JOGADOR_DIREITA;
 			}
 		}
 	}
@@ -149,5 +124,4 @@ public class Jogador extends Criatura {
 	public void mostrar(Pantalla pantalla) {
 		pantalla.mostrarJogador(x, y, this);
 	}
-
 }
