@@ -79,7 +79,12 @@ public class Juego extends Canvas implements Runnable {
 		mapa = new MapaCargado("/texturas/mapa.png");
 		
 		// Inicialização do jogador com posição e sprite inicial
-		jogador = new Jogador(mapa, teclado, Sprite.ARRIBA0, 100, 384);
+		// ATENÇÃO: Aqui você precisará usar os novos nomes de Sprite. Ex: Sprite.JOGADOR_ABAJO
+		// O código original pode estar usando um sprite não mais válido (ex: Sprite.ARRIBA0)
+		// Verifique sua classe Jogador e como o sprite é atribuído.
+		// Exemplo de como ficaria com o novo nome:
+		jogador = new Jogador(mapa, teclado, Sprite.JOGADOR_ARRIBA, 100, 384);
+
 
 		ventana = new JFrame(NOMBRE);
 		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Define a operação padrão ao fechar a janela
@@ -133,24 +138,11 @@ public class Juego extends Canvas implements Runnable {
 		jogador.actualizar(); // Atualiza a lógica do jogador
 
 		// Exemplo de como usar os getters do Teclado para lógica de movimento
-		// (descomente e adapte se precisar usar este bloco de código no futuro)
-		/*
-		if (teclado.isArriba()) {
-		    // y--;
-		}
-		if (teclado.isAbajo()) {
-		    // y++;
-		}
-		if (teclado.isIzquierda()) {
-		    // x--;
-		}
-		if (teclado.isDireita()) {
-		    // x++;
-		}
-		*/
+		// Se você tiver desomentado o bloco do Curso 46, ele deve usar os getters
+		// Ex: if (teclado.isArriba()) { ... }
 		
 		// Verifica se a tecla de saída (ESC) foi pressionada
-		if (teclado.isSalir()) { // **MUDANÇA AQUI: usando o getter isSalir()**
+		if (teclado.isSalir()) { // Usando o getter isSalir() da classe Teclado
 			System.exit(0); // Encerra a aplicação
 		}
 		aps++; // Incrementa o contador de atualizações por segundo
@@ -174,8 +166,9 @@ public class Juego extends Canvas implements Runnable {
 				pantalla);
 		jogador.mostrar(pantalla); // Mostra o jogador na tela
 
-		// Copia os pixels da tela para o buffer de imagem
-		System.arraycopy(pantalla.pixeles, 0, pixeles, 0, pixeles.length);
+		// COPIA DOS PIXELS DA PANTALLA PARA O BUFFER DE IMAGEM DA JANELA
+		// MUDANÇA AQUI: Agora usando pantalla.getPixeles()
+		System.arraycopy(pantalla.getPixeles(), 0, pixeles, 0, pixeles.length);
 		
 		Graphics g = estrategia.getDrawGraphics(); // Obtém o contexto gráfico
 
