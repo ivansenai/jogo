@@ -1,227 +1,156 @@
-// Image
-// Sempre usar na potência de 2 
-//
-// Lista de Sprite criado em 320px vs 320px e 300 pixeles (vermelho e azul)
-// Guarda em cdr e exportar para png (hojasprite.png ou hojasprite.cdr)
-// Cada Sprite é criado em 32px vs 32px e 300 pixeles (livre)
-// Guardar em cdr e exportar para pgn (livre)
-
 package juego;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-
 import control.Teclado;
 import entes.criaturas.Jogador;
 import graficos.Pantalla;
-import graficos.Sprite;
 import mapa.Mapa;
-import mapa.MapaCargado;
+import mapa.MapaCargado; // Ou MapaGenerado
 
 public class Juego extends Canvas implements Runnable {
-
 	private static final long serialVersionUID = 1L;
 
-	// Constantes de dimensão da janela do jogo
 	private static final int ANCHO = 1024;
 	private static final int ALTO = 800;
-
-	// Flag para controlar o estado de execução do jogo
 	private static volatile boolean enFuncionamiento = false;
-
-	// Nome da janela do jogo
 	private static final String NOMBRE = "Juego";
 
-	// Contadores de atualizações por segundo (APS) e frames por segundo (FPS)
 	private static String CONTADOR_APS = "";
 	private static String CONTADOR_FPS = "";
 
-	private static int aps = 0;
-	private static int fps = 0;
+	private static JFrame ventana;
+	private static Thread thread;
+	private static Teclado teclado;
+	private static Pantalla pantalla;
+	private static Mapa mapa;
+	private static Jogador jogador;
 
-	// Objetos estáticos para a estrutura do jogo
-	private static JFrame ventana; // Janela principal
-	private static Thread thread; // Thread de execução do jogo
-	private static Teclado teclado; // Objeto para controle do teclado
-	private static Pantalla pantalla; // Objeto para renderização na tela
-	private static Mapa mapa; // Objeto do mapa do jogo
-	private static Jogador jogador; // Objeto do jogador
+	private BufferedImage imagen;
+	private int[] pixeles;
 
-	// Buffer de imagem para renderização
-	private static BufferedImage image = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
-	private static int[] pixeles = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-	
-	// Ícone da janela do jogo
-	private static final ImageIcon icono = new ImageIcon(Juego.class.getResource("/icono/icone.png"));
-
-	/**
-	 * Construtor da classe Juego.
-	 * Configura a janela, inicializa a tela, o teclado, o mapa e o jogador.
-	 */
-	private Juego() {
+	public Juego() {
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 
 		pantalla = new Pantalla(ANCHO, ALTO);
-
 		teclado = new Teclado();
-		addKeyListener(teclado); // Adiciona o KeyListener ao Canvas
+		addKeyListener(teclado);
 
-		// Inicialização do mapa (usando MapaCargado)
-		mapa = new MapaCargado("/texturas/mapa.png");
-		
-		// Inicialização do jogador com posição e sprite inicial
-		// ATENÇÃO: Aqui você precisará usar os novos nomes de Sprite. Ex: Sprite.JOGADOR_ABAJO
-		// O código original pode estar usando um sprite não mais válido (ex: Sprite.ARRIBA0)
-		// Verifique sua classe Jogador e como o sprite é atribuído.
-		// Exemplo de como ficaria com o novo nome:
-		jogador = new Jogador(mapa, teclado, Sprite.JOGADOR_ARRIBA, 100, 384);
-
+		imagen = new BufferedImage(ANCHO, ALTO, BufferedImage.TYPE_INT_RGB);
+		pixeles = ((DataBufferInt) imagen.getRaster().getDataBuffer()).getData();
 
 		ventana = new JFrame(NOMBRE);
-		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Define a operação padrão ao fechar a janela
-		ventana.setResizable(false); // Impede redimensionamento da janela
-		ventana.setAlwaysOnTop(true); // Mantém a janela sempre visível no topo
-		ventana.setIconImage(icono.getImage()); // Define o ícone da janela
-		ventana.setLayout(new BorderLayout()); // Define o layout da janela
-		ventana.add(this, BorderLayout.CENTER); // Adiciona o Canvas ao centro da janela
-		ventana.setUndecorated(true); // Remove a barra de título da janela
-		ventana.pack(); // Ajusta o tamanho da janela aos seus componentes
-		ventana.setLocationRelativeTo(null); // Centraliza a janela na tela
-		ventana.setVisible(true); // Torna a janela visível
+		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		ventana.setResizable(false);
+		ventana.setLayout(new BorderLayout());
+		ventana.add(this, BorderLayout.CENTER);
+		ventana.pack();
+		ventana.setLocationRelativeTo(null);
+		ventana.setVisible(true);
+
+		// Carregamento do mapa de exemplo (substitua pelo seu mapa desejado)
+		// Para um mapa gerado, use: mapa = new MapaGenerado(64, 64);
+		mapa = new MapaCargado("/texturas/mapa.png"); // Certifique-se de que o caminho está correto
+		jogador = new Jogador(mapa, teclado, 50, 50); // Posição inicial do jogador
 	}
 
-	/**
-	 * Método principal que inicia o jogo.
-	 * @param args Argumentos de linha de comando (não utilizados).
-	 */
-	public static void main(String[] args) {
-		Juego juego = new Juego();
-		juego.iniciar();
-	}
-
-	/**
-	 * Inicia a thread principal do jogo.
-	 */
 	public synchronized void iniciar() {
 		enFuncionamiento = true;
-		thread = new Thread(this, "Graficos"); // Cria uma nova thread para o loop do jogo
-		thread.start(); // Inicia a thread
+		thread = new Thread(this, "Graficos");
+		thread.start();
 	}
 
-	/**
-	 * Detém a thread principal do jogo.
-	 */
 	public synchronized void detener() {
 		enFuncionamiento = false;
 		try {
-			thread.join(); // Espera a thread terminar
+			thread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace(); // Imprime o stack trace em caso de interrupção
+			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Atualiza o estado do jogo.
-	 * Inclui a atualização do teclado, jogador e outras lógicas de jogo.
-	 */
 	private void actualizar() {
-		teclado.actualizar(); // Atualiza o estado das teclas no objeto Teclado
-		jogador.actualizar(); // Atualiza a lógica do jogador
-
-		// Exemplo de como usar os getters do Teclado para lógica de movimento
-		// Se você tiver desomentado o bloco do Curso 46, ele deve usar os getters
-		// Ex: if (teclado.isArriba()) { ... }
-		
-		// Verifica se a tecla de saída (ESC) foi pressionada
-		if (teclado.isSalir()) { // Usando o getter isSalir() da classe Teclado
-			System.exit(0); // Encerra a aplicação
-		}
-		aps++; // Incrementa o contador de atualizações por segundo
+		teclado.actualizar();
+		jogador.actualizar();
+		mapa.actualizar();
 	}
 
-	/**
-	 * Renderiza os gráficos do jogo na tela.
-	 * Desenha o mapa, o jogador e a interface de usuário (HUD).
-	 */
 	private void mostrar() {
-		BufferStrategy estrategia = getBufferStrategy();
-		if (estrategia == null) {
-			createBufferStrategy(3); // Cria uma estratégia de buffer (triplo buffer)
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
 			return;
 		}
-		pantalla.limpar(); // Limpa a tela antes de desenhar
 
-		// Mostra o mapa centralizado na posição do jogador
-		mapa.mostrar(jogador.obtenerPosicionX() - pantalla.obtemAncho() / 2 + jogador.obtenerSprite().obtemLado() / 2,
-				jogador.obtenerPosicionY() - pantalla.obtemAlto() / 2 + jogador.obtenerSprite().obtemLado() / 2,
-				pantalla);
-		jogador.mostrar(pantalla); // Mostra o jogador na tela
+		pantalla.limpiar();
 
-		// COPIA DOS PIXELS DA PANTALLA PARA O BUFFER DE IMAGEM DA JANELA
-		// MUDANÇA AQUI: Agora usando pantalla.getPixeles()
-		System.arraycopy(pantalla.getPixeles(), 0, pixeles, 0, pixeles.length);
-		
-		Graphics g = estrategia.getDrawGraphics(); // Obtém o contexto gráfico
+		int posicionX = jogador.obtenerPosicionX() - (pantalla.obtemAncho() / 2);
+		int posicionY = jogador.obtenerPosicionY() - (pantalla.obtemAlto() / 2);
 
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), null); // Desenha a imagem no Canvas
-		g.setColor(Color.white); // Define a cor do texto para branco
-		
-		// Desenha as informações de contadores e posição do jogador
+		mapa.mostrar(posicionX, posicionY, pantalla);
+		jogador.mostrar(pantalla);
+
+		System.arraycopy(pantalla.pixeles, 0, pixeles, 0, pixeles.length);
+
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(imagen, 0, 0, getWidth(), getHeight(), null);
 		g.drawString(CONTADOR_APS, 10, 20);
 		g.drawString(CONTADOR_FPS, 10, 35);
-		g.drawString("X: " + jogador.obtenerPosicionX(), 10, 50);
-		g.drawString("Y: " + jogador.obtenerPosicionY(), 10, 65);
-		
-		g.dispose(); // Libera os recursos gráficos
-		estrategia.show(); // Exibe o próximo buffer disponível
-		fps++; // Incrementa o contador de frames por segundo
+		g.dispose();
+
+		bs.show();
 	}
 
-	/**
-	 * Loop principal do jogo.
-	 * Gerencia a lógica de atualização (APS) e renderização (FPS) do jogo.
-	 */
+	@Override
 	public void run() {
-		final int NS_POR_SEGUNDO = 1000000000; // Nanosegundos em um segundo
-		final byte APS_OBJETIVO = 60; // Atualizações por segundo desejadas
-		final double NS_POR_ACTUALIZACION = (double)NS_POR_SEGUNDO / APS_OBJETIVO; // Nanosegundos por atualização
+		final int APS_OBJETIVO = 60;
+		final double NS_POR_ACTUALIZACION = 1000000000 / APS_OBJETIVO;
 
-		long referenciaActualizacion = System.nanoTime(); // Marca o tempo da última atualização
-		long referenciaContador = System.nanoTime(); // Marca o tempo do último reset do contador
-		double tiempoTranscurrido; // Tempo transcorrido desde a última atualização
-		double delta = 0; // Acumulador para as atualizações
+		long referenciaActualizacion = System.nanoTime();
+		long referenciaContador = System.nanoTime();
 
-		requestFocus(); // Garante que o Canvas receba o foco para eventos de teclado
+		double tiempoTranscurrido;
+		double delta = 0;
+
+		int aps = 0;
+		int fps = 0;
+
+		requestFocus();
+
 		while (enFuncionamiento) {
-			final long inicioBucle = System.nanoTime(); // Marca o início do ciclo do loop
-			tiempoTranscurrido = inicioBucle - referenciaActualizacion; // Calcula o tempo desde a última referência
-			referenciaActualizacion = inicioBucle; // Atualiza a referência de tempo
-			delta += tiempoTranscurrido / NS_POR_ACTUALIZACION; // Acumula o delta para as atualizações
+			final long inicioBucle = System.nanoTime();
+			tiempoTranscurrido = inicioBucle - referenciaActualizacion;
+			referenciaActualizacion = inicioBucle;
+			delta += tiempoTranscurrido / NS_POR_ACTUALIZACION;
 
-			// Loop para garantir que as atualizações ocorram na taxa desejada (APS)
 			while (delta >= 1) {
-				actualizar(); // Chama o método de atualização
-				delta--; // Decrementa o delta
+				actualizar();
+				aps++;
+				delta--;
 			}
-			mostrar(); // Chama o método de renderização (mostrar)
 
-			// Atualiza os contadores de APS e FPS a cada segundo
-			if (System.nanoTime() - referenciaContador > NS_POR_SEGUNDO) {
+			mostrar();
+			fps++;
+
+			if (System.nanoTime() - referenciaContador > 1000000000) {
 				CONTADOR_APS = "APS: " + aps;
 				CONTADOR_FPS = "FPS: " + fps;
-				aps = 0; // Reseta o contador de APS
-				fps = 0; // Reseta o contador de FPS
-				referenciaContador = System.nanoTime(); // Atualiza a referência do contador
+				aps = 0;
+				fps = 0;
+				referenciaContador = System.nanoTime();
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		Juego juego = new Juego();
+		juego.iniciar();
 	}
 }
