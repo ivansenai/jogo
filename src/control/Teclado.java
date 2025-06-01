@@ -5,31 +5,25 @@ import java.awt.event.KeyListener;
 
 public final class Teclado implements KeyListener {
 
-    private final static int NUMERO_TECLAS = 120; // Constante em maiúsculas
+    private final static int NUMERO_TECLAS = 120;
     private final boolean[] teclas = new boolean[NUMERO_TECLAS];
 
-    // Variáveis agora privadas
     private boolean arriba;
     private boolean abajo;
     private boolean izquierda;
-    private boolean derecha;
+    private boolean derecha; // Padronizado para 'derecha'
     private boolean correr;
     private boolean salir;
 
-    /**
-     * Atualiza o estado das variáveis de controle com base nas teclas pressionadas.
-     * Este método deve ser chamado uma vez por frame do jogo.
-     */
     public void actualizar() {
         arriba = teclas[KeyEvent.VK_W];
         abajo = teclas[KeyEvent.VK_S];
         izquierda = teclas[KeyEvent.VK_A];
-        direita = teclas[KeyEvent.VK_D];
+        derecha = teclas[KeyEvent.VK_D]; // Usando 'derecha'
         salir = teclas[KeyEvent.VK_ESCAPE];
         correr = teclas[KeyEvent.VK_SHIFT];
     }
 
-    // --- Getters para as variáveis de controle ---
     public boolean isArriba() {
         return arriba;
     }
@@ -42,8 +36,8 @@ public final class Teclado implements KeyListener {
         return izquierda;
     }
 
-    public boolean isDireita() { // Renomeado para "Direita" para consistência
-        return direita;
+    public boolean isDerecha() { // Getter correspondente
+        return derecha;
     }
 
     public boolean isCorrer() {
@@ -54,13 +48,8 @@ public final class Teclado implements KeyListener {
         return salir;
     }
 
-    /**
-     * Verifica se uma tecla específica está pressionada.
-     * @param keyCode O código da tecla a ser verificada (ex: KeyEvent.VK_SPACE).
-     * @return true se a tecla estiver pressionada, false caso contrário.
-     */
     public boolean estaPressionada(int keyCode) {
-        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) { // Adiciona validação para evitar ArrayIndexOutOfBoundsException
+        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) {
             return teclas[keyCode];
         }
         return false;
@@ -69,7 +58,7 @@ public final class Teclado implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) { // Adiciona validação
+        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) {
             teclas[keyCode] = true;
         }
     }
@@ -77,7 +66,7 @@ public final class Teclado implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) { // Adiciona validação
+        if (keyCode >= 0 && keyCode < NUMERO_TECLAS) {
             teclas[keyCode] = false;
         }
     }
