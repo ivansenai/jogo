@@ -1,0 +1,77 @@
+name: Java CI Build
+
+on:
+  push:
+    branches:
+      - main # O workflow será executado em pushes para a branch 'main'
+  pull_request:
+    branches:
+      - main # O workflow será executado em pull requests para a branch 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # A máquina virtual que executará o build (Ubuntu é padrão para Java)
+
+    steps:
+    - name: Checkout repository # Baixa o código do seu repositório
+      uses: actions/checkout@v4
+
+    - name: Set up Java # Configura o ambiente Java na VM
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17' # Versão do Java. Ajuste para a versão que você usa (ex: '8', '11', '21')
+        distribution: 'temurin' # Distribuição Java (alternativas: 'adopt', 'oracle', etc.)
+
+    - name: Compile Java code and prepare resources # Compila o código Java e copia os recursos
+      run: |
+        mkdir -p build/classes # Cria o diretório de saída para os arquivos .class
+
+        # Compila todos os arquivos .java encontrados na pasta 'src' e subpastas.
+        # O comando `find ... | xargs javac` é robusto para projetos com múltiplos pacotes.
+        find src -name "*.java" | xargs javac -d build/classes
+
+        # IMPORTANTE: Copiar arquivos de recurso (imagens, sons, mapas, etc.) para o diretório de classes
+        # para que sejam incluídos no JAR e possam ser encontrados por `Class.getResourceAsStream()`.
+        #
+        # ASSUNÇÃO: Seus recursos (ex: 'hojasprite.png', imagens de mapa) estão em uma pasta chamada 'res'
+        # na raiz do seu projeto (ao lado da pasta 'src'). Por exemplo:
+        # my_game_project/
+        # ├── src/
+        # └── res/
+        #     ├── hojasprite.png
+        #     └── mapa/
+        #         └── mapa_exemplo.png
+        #
+        # Se você carrega recursos com paths como "/hojasprite.png" ou "/mapa/imagens/mapa_exemplo.png",
+        # a estrutura dentro de 'res' deve espelhar esses paths absolutos esperados dentro do JAR.
+
+        if [ -d "res" ]; then # Verifica se o diretório 'res' existe
+          cp -r res/* build/classes/ # Copia todo o conteúdo de 'res' para 'build/classes'
+          echo "Copied resources from 'res' directory."
+        else
+          echo "No 'res' directory found. Skipping resource copy from 'res'."
+        fi
+
+        # SE seus recursos estão em uma pasta dentro do seu pacote (ex: `src/mapa/imagens/`),
+        # e você os carrega via `MapaCargado.class.getResource("imagens/mapa1.png")`,
+        # você precisaria de um comando como:
+        # cp -r src/mapa/imagens build/classes/mapa/ || true
+        # (Ajuste o caminho conforme necessário, e pode ter múltiplas linhas 'cp -r')
+
+
+    - name: Create Executable JAR file # Cria o arquivo JAR executável do seu jogo
+      run: |
+        cd build/classes # Navega para o diretório de classes compiladas
+        # Cria um arquivo MANIFEST.MF que especifica a classe principal do seu jogo.
+        # Como a classe principal é 'Juego' no pacote 'juego', o nome completo é 'juego.Juego'.
+        echo "Main-Class: juego.Juego" > MANIFEST.MF
+        # Cria o arquivo JAR, incluindo o manifesto e todos os arquivos compilados/recursos.
+        jar -cvfm ../my_game.jar MANIFEST.MF .
+        cd ../.. # Volta para a raiz do repositório
+
+    - name: Upload compiled JAR as an artifact (Optional) # Salva o JAR como um artefato do workflow
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-java-game # Nome do artefato no GitHub Actions
+        path: build/my_game.jar # Caminho para o arquivo JAR gerado
+        retention-days: 7 # Número de dias para manter o artefato (opcional)
