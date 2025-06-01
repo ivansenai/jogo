@@ -124,7 +124,7 @@ public class MapaCargado extends Mapa {
 				case 0xff001369:
 					cuadrosCatalogo[i] = Cuadro.MURO;
 					break;
-				case 0xff770076: // Corrigido de -8978314 para 0xFF770076
+				case 0xff770076:
 					cuadrosCatalogo[i] = Cuadro.SEGURANCA180;
 					break;
 				case 0xff2A8400:
@@ -172,7 +172,7 @@ public class MapaCargado extends Mapa {
 				case 0xffB28400:
 					cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_02;
 					break;
-				case 0xffB56900: // Verifique e altere esta cor se estiver repetida na imagem
+				case 0xffB56900:
 					cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_03;
 					break;
 				case 0xff7D7400:
