@@ -7,48 +7,38 @@ public abstract class Mapa {
 	protected int ancho;
 	protected int alto;
 
-	protected int[] cuadros;
 	protected Cuadro[] cuadrosCatalogo;
 
 	public Mapa(int ancho, int alto) {
 		this.ancho = ancho;
 		this.alto = alto;
-
-		cuadros = new int[ancho * alto];
+		this.cuadrosCatalogo = new Cuadro[ancho * alto];
 		generarMapa();
 	}
 
 	public Mapa(String ruta) {
 		cargaMapa(ruta);
-		generarMapa();
+		// generarMapa() será chamado no construtor de MapaCargado após cargaMapa() definir ancho/alto
 	}
 
-	protected void generarMapa() {
+	protected abstract void generarMapa();
 
-	}
-
-	protected void cargaMapa(String ruta) {
-	}
+	protected abstract void cargaMapa(String ruta);
 
 	public void actualizar() {
 	}
 
-	public void mostrar(final int compensiacionX, final int compensiacionY, final Pantalla pantalla) {
-		pantalla.estabeleceDiferencia(compensiacionX, compensiacionY);
-		// / 32;
-		// >> 5;
-		// Similar ao codigo abaixo
-		int o = compensiacionX >> 5; // Dividir tamanho dos sprites
-		int e = (compensiacionX + pantalla.obtemAncho() + Cuadro.LADO) >> 5;
-		int n = compensiacionY >> 5;
-		int s = (compensiacionY + pantalla.obtemAlto() + Cuadro.LADO) >> 5;
-		// Fim Similar
+	public void mostrar(final int compensacionX, final int compensacionY, final Pantalla pantalla) {
+		pantalla.estableceDiferencia(compensacionX, compensacionY);
 
-		for (int y = n; y < s; y++) {
-			for (int x = o; x < e; x++) {
-				// Curso 31 Comentado
-				// obtemCuadro(x, y).mostrar(x, y, pantalla);
-				// Curso 31 Fim
+		int offsetX = compensacionX >> 5;
+		int offsetY = compensacionY >> 5;
+
+		int tileEndX = (compensacionX + pantalla.obtemAncho() + Cuadro.LADO) >> 5;
+		int tileEndY = (compensacionY + pantalla.obtemAlto() + Cuadro.LADO) >> 5;
+
+		for (int y = offsetY; y < tileEndY; y++) {
+			for (int x = offsetX; x < tileEndX; x++) {
 				if ((x < 0) || (y < 0) || (x >= ancho) || (y >= alto)) {
 					Cuadro.VACIO.mostrar(x, y, pantalla);
 				} else {
@@ -58,29 +48,18 @@ public abstract class Mapa {
 		}
 	}
 
-	public Cuadro obtemCuadro(final int x, final int y) {
+	public Cuadro obtenerCuadro(final int x, final int y) {
 		if (x < 0 || y < 0 || x >= ancho || y >= alto) {
 			return Cuadro.VACIO;
 		}
-		switch (cuadros[x + y * ancho]) {
-		case 0:
-			return Cuadro.ASFALTO;
-		case 1:
-			return Cuadro.AREIA;
-		case 2:
-			return Cuadro.GRAMA;
-		case 3:
-			return Cuadro.CENTRO_CARRETERA;
-		default:
-			return Cuadro.VACIO;
-		}
-	}
-
-	public Cuadro obtenerCuadroCatalogo(int posicion) {
-		return cuadrosCatalogo[posicion];
+		return cuadrosCatalogo[x + y * ancho];
 	}
 
 	public int obtenerAncho() {
 		return ancho;
+	}
+
+	public int obtenerAlto() {
+		return alto;
 	}
 }
