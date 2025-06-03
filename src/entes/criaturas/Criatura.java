@@ -1,94 +1,130 @@
 package entes.criaturas;
 
-import entes.Ente;
+import control.Teclado;
+import graficos.Pantalla;
 import graficos.Sprite;
 import mapa.Mapa;
-import mapa.cuadro.Cuadro; // Adicionado: Importação da classe Cuadro
 
-public abstract class Criatura extends Ente {
-	protected Sprite sprite;
-	protected char direccion = 'n';
-	protected boolean enMovimiento = false;
+public class Jogador extends Criatura {
+	private Teclado teclado;
+	private int animacion;
 
-	public Criatura(Mapa mapa) {
-		super(mapa); // Chama o construtor da superclasse Ente
+	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
+		super(mapa); // Chama o construtor da superclasse Criatura que exige 'mapa'
+		this.teclado = teclado;
+		this.sprite = sprite;
 	}
 
-	@Override
+	public Jogador(Mapa mapa, Teclado teclado, int posicionX, int posicionY) {
+		this(mapa, teclado, Sprite.JOGADOR_BAIXO);
+		this.x = posicionX;
+		this.y = posicionY;
+	}
+
 	public void actualizar() {
-		// Implementação pode ser adicionada em subclasses se necessário
-	}
+		// D eclaração das variáveis locais para deslocamento
+		int desplazamientoX = 0;
+		int desplazamientoY = 0;
+		int velocidadeMovimiento = 1;
 
-	@Override
-	public void mostrar() {
-		// Implementação pode ser adicionada em subclasses se necessário
-	}
-
-	public void mover(int desplazamientoX, int desplazamientoY) {
-		if (desplazamientoX > 0) {
-			direccion = 'e';
-		}
-		if (desplazamientoX < 0) {
-			direccion = 'o';
-		}
-		if (desplazamientoY > 0) {
-			direccion = 's';
-		}
-		if (desplazamientoY < 0) {
-			direccion = 'n';
+		if (animacion < 32767) {
+			animacion++;
+		} else {
+			animacion = 0;
 		}
 
-		if (!estaEliminado()) {
-			if (!enColision(desplazamientoX, 0)) {
-				modificarPosicionX(desplazamientoX);
+		// Usando os métodos getter do Teclado
+		if (teclado.isCorrer()) {
+			velocidadeMovimiento = 2;
+		}
+
+		if (teclado.isArriba()) {
+			desplazamientoY -= velocidadeMovimiento;
+		}
+		if (teclado.isAbajo()) {
+			desplazamientoY += velocidadeMovimiento;
+		}
+		if (teclado.isIzquierda()) {
+			desplazamientoX -= velocidadeMovimiento;
+		}
+		if (teclado.isDerecha()) {
+			desplazamentoX += velocidadeMovimiento;
+		}
+
+		// Verifica se houve movimento para chamar o método mover
+		if (desplazamentoX != 0 || desplazamientoY != 0) {
+			mover(desplazamentoX, desplazamientoY);
+			enMovimiento = true; // 'enMovimiento' é da superclasse Criatura
+		} else {
+			enMovimiento = false;
+		}
+
+		int resto = animacion % 40;
+
+		// Lógica de animação baseada na direção e no estado de movimento
+		if (direccion == 'n') { // Cima
+			if (enMovimiento) { // 'enMovimiento' é da superclasse Criatura
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_CIMA_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_CIMA_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_CIMA_1;
+				} else {
+					sprite = Sprite.JOGADOR_CIMA;
+				}
+			} else {
+				sprite = Sprite.JOGADOR_CIMA;
 			}
-			if (!enColision(0, desplazamientoY)) {
-				modificarPosicionY(desplazamientoY);
+		}
+		if (direccion == 's') { // Baixo
+			if (enMovimiento) { // 'enMovimiento' é da superclasse Criatura
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_BAIXO_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_BAIXO_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_BAIXO_1;
+				} else {
+					sprite = Sprite.JOGADOR_BAIXO;
+				}
+			} else {
+				sprite = Sprite.JOGADOR_BAIXO;
+			}
+		}
+		if (direccion == 'o') { // Esquerda
+			if (enMovimento) { // 'enMovimiento' é da superclasse Criatura
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_ESQUERDA_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_ESQUERDA_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_ESQUERDA_1;
+				} else {
+					sprite = Sprite.JOGADOR_ESQUERDA;
+				}
+			} else {
+				sprite = Sprite.JOGADOR_ESQUERDA;
+			}
+		}
+		if (direccion == 'e') { // Direita
+			if (enMovimento) { // 'enMovimiento' é da superclasse Criatura
+				if ((resto > 10) && (resto <= 20)) {
+					sprite = Sprite.JOGADOR_DIREITA_1;
+				} else if ((resto > 20) && (resto <= 30)) {
+					sprite = Sprite.JOGADOR_DIREITA_2;
+				} else if (resto > 30) {
+					sprite = Sprite.JOGADOR_DIREITA_1;
+				} else {
+					sprite = Sprite.JOGADOR_DIREITA;
+				}
+			} else {
+				sprite = Sprite.JOGADOR_DIREITA;
 			}
 		}
 	}
 
-	private boolean enColision(int desplazamientoX, int desplazamientoY) {
-		boolean colision = false;
-
-		int proximaPosicionX = x + desplazamientoX;
-		int proximaPosicionY = y + desplazamientoY;
-
-		// Margens de colisão dentro do sprite da criatura
-		int margenIzquierda = 6;
-		int margenDerecho = 26;
-		int margenSuperior = 16;
-		int margenInferior = 30;
-
-		int pixelEsquerda = proximaPosicionX + margenIzquierda;
-		int pixelDireita = proximaPosicionX + margenDerecho;
-		int pixelCima = proximaPosicionY + margenSuperior;
-		int pixelBaixo = proximaPosicionY + margenInferior;
-
-		// Converter as coordenadas de pixel para coordenadas de tile
-		int tileEsquerda = pixelEsquerda / Cuadro.LADO; // Corrigido: Usando Cuadro.LADO
-		int tileDireita = pixelDireita / Cuadro.LADO;   // Corrigido: Usando Cuadro.LADO
-		int tileCima = pixelCima / Cuadro.LADO;         // Corrigido: Usando Cuadro.LADO
-		int tileBaixo = pixelBaixo / Cuadro.LADO;       // Corrigido: Usando Cuadro.LADO
-
-		// Verificar a solidez dos 4 cantos da caixa de colisão
-		if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) {
-			colision = true;
-		}
-		if (mapa.obtenerCuadro(tileDireita, tileCima).esSolido()) {
-			colision = true;
-		}
-		if (mapa.obtenerCuadro(tileEsquerda, tileBaixo).esSolido()) {
-			colision = true;
-		}
-		if (mapa.obtenerCuadro(tileDireita, tileBaixo).esSolido()) {
-			colision = true;
-		}
-
-		return colision;
-	}
-
-	public Sprite obtenerSprite() {
-		return sprite;
+	public void mostrar(Pantalla pantalla) {
+		pantalla.mostrarJogador(x, y, this);
 	}
 }
