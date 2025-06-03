@@ -1,7 +1,7 @@
 package mapa;
 
-import graficos.Pantalla; // Certifique-se de que o pacote graficos existe
-import mapa.cuadro.Cuadro; // Importação essencial para Cuadro.LADO e Cuadro.VACIO
+import graficos.Pantalla;
+import mapa.cuadro.Cuadro;
 
 public abstract class Mapa {
 	protected int ancho;
@@ -23,23 +23,20 @@ public abstract class Mapa {
 		// Este construtor existe para ser chamado por MapaCargado.
 		// MapaCargado será responsável por chamar carregarMapa(ruta) e definir ancho/alto,
 		// e então, se necessário, chamar generarMapa().
-		// A inicialização de cuadrosCatalogo e a chamada de generarMapa()
-		// devem ser feitas na subclasse MapaCargado.
+		// A inicialização de cuadrosCatalogo deve ser feita na subclasse MapaCargado após definir ancho/alto.
 	}
 
 	// Método abstrato para gerar o mapa (implementado em MapaGenerado)
 	protected abstract void generarMapa();
 
 	// Método abstrato para carregar o mapa de um arquivo (implementado em MapaCargado)
-	// O nome foi padronizado para "carregarMapa" para evitar erros de sobrescrita.
 	protected abstract void carregarMapa(String ruta);
 
 	public void actualizar() {
-		// Implementação pode ser adicionada em subclasses se necessário,
-		// ou pode ser vazia se o mapa não tiver elementos dinâmicos para atualizar.
+		// As subclasses podem adicionar lógica de atualização se necessário
 	}
 
-	public void mostrar(final int compensacionX, final int compensacionY, final Pantalla pantalla) {
+	public void mostrar(int compensacionX, int compensacionY, Pantalla pantalla) {
 		pantalla.estableceDiferencia(compensacionX, compensacionY);
 
 		// Calcula os offsets em termos de tiles (assumindo Cuadro.LADO = 32)
@@ -58,7 +55,7 @@ public abstract class Mapa {
 					Cuadro.VACIO.mostrar(x, y, pantalla); // Desenha um quadro vazio se fora dos limites
 				} else {
 					// Mostra o quadro correspondente na tela
-					cuadrosCatalogo[x + y * ancho].mostrar(x, y, pantalla);
+					obtenerCuadro(x, y).mostrar(x, y, pantalla);
 				}
 			}
 		}
@@ -66,14 +63,17 @@ public abstract class Mapa {
 
 	// Retorna o quadro em uma determinada coordenada (x, y) do mapa
 	public Cuadro obtenerCuadro(final int x, final int y) {
-		// Retorna um quadro vazio se as coordenadas estiverem fora dos limites do mapa
+		// Retorna um quadro vazio se as coordenadas estiverem fora dos
+		// limites, evitando ArrayIndexOutOfBoundsException
 		if (x < 0 || y < 0 || x >= ancho || y >= alto) {
 			return Cuadro.VACIO;
 		}
-		// Retorna o quadro do catálogo (array 1D mapeado de 2D)
+
+		// Retorna o quadro do catálogo
 		return cuadrosCatalogo[x + y * ancho];
 	}
 
+	// Métodos auxiliares para obter largura e altura do mapa
 	public int obtenerAncho() {
 		return ancho;
 	}
