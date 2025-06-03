@@ -7,6 +7,7 @@ import mapa.Mapa;
 
 public class Jogador extends Ente {
 	private Teclado teclado;
+	private Sprite sprite;
 	private int animacion;
 
 	// Construtor principal para Jogador
