@@ -10,11 +10,9 @@ public abstract class Criatura extends Ente {
 	protected char direccion = 'n';
 	protected boolean enMovimiento = false; // Declarado como protected
 
-	// !!! ATENÇÃO: CONSTRUTOR CORRIGIDO !!!
 	public Criatura(Mapa mapa) {
 		super(mapa); // Chama o construtor da superclasse Ente
 	}
-	// !!! FIM DA ATENÇÃO !!!
 
 	@Override
 	public void actualizar() {
@@ -51,17 +49,17 @@ public abstract class Criatura extends Ente {
 	}
 	
 	private boolean enColision(int desplazamientoX, int desplazamientoY) {
-		[span_4](start_span)boolean colision = false;[span_4](end_span)
+		boolean colision = false; // Removidos marcadores [span_X]
 
 		int proximaPosicionX = x + desplazamientoX;
 		int proximaPosicionY = y + desplazamientoY;
 
 		// Margens de colisão dentro do sprite da criatura
 		// AJUSTE ESTES VALORES SE SEUS SPRITES TIVEREM MARGENS DIFERENTES
-		int margenIzquierda = 6; // Ajustado para valores mais comuns
-		int margenDerecho = 26; // Ajustado para valores mais comuns
-		int margenSuperior = 16; // Ajustado para valores mais comuns
-		int margenInferior = 30; // Ajustado para valores mais comuns
+		int margenIzquierda = 6; 
+		int margenDerecho = 26; 
+		int margenSuperior = 16; 
+		int margenInferior = 30; 
 
 		int pixelEsquerda = proximaPosicionX + margenIzquierda;
 		int pixelDireita = proximaPosicionX + margenDerecho;
@@ -70,25 +68,25 @@ public abstract class Criatura extends Ente {
 
 		// Converter as coordenadas de pixel para coordenadas de tile
 		// Cuadro.LADO é o tamanho do tile (ex: 32 pixels)
-		// Alterar de sprite.obtemLado() para Cuadro.LADO ou sprite.getLado()
-		int tileEsquerda = pixelEsquerda / getLado(); [span_5](start_span)// Alterado aqui[span_5](end_span)
-		int tileDireita = pixelDireita / getLado(); [span_6](start_span)// Alterado aqui[span_6](end_span)
-		int tileCima = pixelCima / getLado(); [span_7](start_span)// Alterado aqui[span_7](end_span)
-		int tileBaixo = pixelBaixo / getLado(); [span_8](start_span)// Alterado aqui[span_8](end_span)
+		// Alterado de sprite.obtemLado() para sprite.getLado()
+		int tileEsquerda = pixelEsquerda / sprite.getLado(); 
+		int tileDireita = pixelDireita / sprite.getLado(); 
+		int tileCima = pixelCima / sprite.getLado(); 
+		int tileBaixo = pixelBaixo / sprite.getLado(); 
 
 		// Verificar a solidez dos 4 cantos da caixa de colisão
 		// Assumindo que mapa.obtenerCuadro(x, y) retorna um Cuadro
 		// e que Cuadro tem um método esSolido()
-		[span_9](start_span)if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_9](end_span)
+		if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) { // Removidos marcadores [span_X]
 			colision = true;
 		}
-		[span_10](start_span)if (mapa.obtenerCuadro(tileDireita, tileCima).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_10](end_span)
+		if (mapa.obtenerCuadro(tileDireita, tileCima).esSolido()) { // Removidos marcadores [span_X]
 			colision = true;
 		}
-		[span_11](start_span)if (mapa.obtenerCuadro(tileEsquerda, tileBaixo).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_11](end_span)
+		if (mapa.obtenerCuadro(tileEsquerda, tileBaixo).esSolido()) { // Removidos marcadores [span_X]
 			colision = true;
 		}
-		[span_12](start_span)if (mapa.obtenerCuadro(tileDireita, tileBaixo).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_12](end_span)
+		if (mapa.obtenerCuadro(tileDireita, tileBaixo).esSolido()) { // Removidos marcadores [span_X]
 			colision = true;
 		}
 
