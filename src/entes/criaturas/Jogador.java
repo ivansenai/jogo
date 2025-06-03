@@ -9,6 +9,7 @@ public class Jogador extends Ente {
 	private Teclado teclado;
 	private Sprite sprite;
 	private int animacion;
+	private int x, y;
 
 	// Construtor principal para Jogador
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
