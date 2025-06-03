@@ -4,7 +4,7 @@ import mapa.Mapa;
 
 public abstract class Ente {
 	protected int x;
-	protected int int y;
+	protected int y;
 
 	private boolean eliminado = false;
 	protected Mapa mapa;
