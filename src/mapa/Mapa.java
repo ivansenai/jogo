@@ -1,6 +1,6 @@
 package mapa;
 
-import graficos.Patalla; // Certifique-se de que o pacote graficos existe
+import graficos.Pantalla; // Certifique-se de que o pacote graficos existe
 import mapa.cuadro.Cuadro; // Importação essencial para Cuadro.LADO e Cuadro.VACIO
 import mapa.cuadro.CuadroVacio; // Importar CuadroVacio
 
