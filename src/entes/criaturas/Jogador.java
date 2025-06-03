@@ -46,16 +46,16 @@ public class Jogador extends Criatura {
 		// Atualiza o deslocamento com base nas teclas pressionadas
 		// Usa os getters do Teclado
 		if (teclado.isArriba()) { // Usando o getter correto
-			desplazamentoY -= velocidadeMovimiento;
+			desplazamentoY = velocidadeMovimiento - 1;
 		}
 		if (teclado.isAbajo()) { // Usando o getter correto
-			desplazamentoY += velocidadeMovimiento;
+			desplazamentoY = velocidadeMovimiento + 1;
 		}
 		if (teclado.isIzquierda()) { // Usando o getter correto
-			desplazamentoX -= velocidadeMovimiento;
+			desplazamentoX = velocidadeMovimiento - 1;
 		}
 		if (teclado.isDerecha()) { // Usando o getter correto
-			desplazamentoX += velocidadeMovimiento;
+			desplazamentoX = velocidadeMovimiento + 1;
 		}
 
 		// Se houver algum deslocamento, move o jogador
