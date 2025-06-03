@@ -62,7 +62,7 @@ public final class Pantalla {
         }
     }
 
-    public void estableceDiferencia(diferenciaX, int diferenciaY) {
+    public void estableceDiferencia(int diferenciaX, int diferenciaY) {
         this.diferenciaX = diferenciaX;
         this.diferenciaY = diferenciaY;
     }
