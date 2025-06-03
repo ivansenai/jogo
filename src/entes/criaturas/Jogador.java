@@ -11,7 +11,7 @@ public class Jogador extends Criatura {
 
 	// Construtor principal para Jogador
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
-		super(mapa); 
+		super(mapa); // Chama o construtor da superclasse Criatura (que chama Ente)
 		this.teclado = teclado;
 		this.sprite = sprite;
 	}
@@ -38,36 +38,35 @@ public class Jogador extends Criatura {
 		}
 
 		// Acesso corrigido aos estados do teclado usando os MÉTODOS GETTERS
-		if (teclado.isCorrer()) { 
+		if (teclado.isCorrer()) { // Corrigido de teclado.correr para teclado.isCorrer()
 			velocidadeMovimiento = 2;
 		}
 
-		if (teclado.isArriba()) { 
-			desplazamentoY -= velocidadeMovimiento;
+		if (teclado.isArriba()) { // Corrigido de teclado.arriba para teclado.isArriba()
+			desplazamientoY -= velocidadeMovimiento;
 		}
-		if (teclado.isAbajo()) { 
-			desplazamentoY += velocidadeMovimiento;
+		if (teclado.isAbajo()) { // Corrigido de teclado.abajo para teclado.isAbajo()
+			desplazamientoY += velocidadeMovimiento;
 		}
-		if (teclado.isIzquierda()) { 
-			desplazamentoX -= velocidadeMovimiento;
+		if (teclado.isIzquierda()) { // Corrigido de teclado.izquierda para teclado.isIzquierda()
+			desplazamientoX -= velocidadeMovimiento;
 		}
-		if (teclado.isDerecha()) { 
-			desplazamentoX += velocidadeMovimiento;
+		if (teclado.isDerecha()) { // Corrigido de teclado.derecha para teclado.isDerecha()
+			desplazamientoX += velocidadeMovimiento;
 		}
 
-		// Move o jogador se houver deslocamento
-		if (desplazamentoX != 0 || desplazamientoY != 0) {
-			mover(desplazamentoX, desplazamientoY);
-			// 'enMovimiento' é herdado e deve estar acessível se Criatura estiver correta
+		if (desplazamientoX != 0 || desplazamientoY != 0) {
+			mover(desplazamientoX, desplazamientoY);
 			enMovimiento = true;
 		} else {
 			enMovimiento = false;
 		}
 
-		// Lógica de animação do jogador
-		int resto = animacion % 40;
+		// Lógica para seleção do sprite de animação
+		// A animação é baseada no resto da divisão para ciclar entre os sprites
+		int resto = animacion % 40; // Ajustado o divisor para 40, mais comum para ciclos de 4 sprites
 
-		if (direccion == 'n') { // Cima
+		if (direccion == 'n') { // Norte (Cima)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_CIMA_1;
@@ -126,7 +125,13 @@ public class Jogador extends Criatura {
 		}
 	}
 
+	@Override
 	public void mostrar(Pantalla pantalla) {
 		pantalla.mostrarJogador(x, y, this);
+	}
+	
+	// Método para obter o sprite atual do jogador
+	public Sprite obtenerSprite() {
+		return sprite;
 	}
 }
