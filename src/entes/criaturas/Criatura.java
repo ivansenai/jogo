@@ -43,7 +43,7 @@ public abstract class Criatura extends Ente {
                 modificarPosicionX(desplazamientoX);
             }
             if (!enColision(0, desplazamientoY)) {
-                modificarPosicionY(desplplazamientoY);
+                modificarPosicionY(desplazamientoY);
             }
         }
     }
