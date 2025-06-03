@@ -4,10 +4,10 @@ import mapa.Mapa;
 
 public abstract class Ente {
 	protected int x;
-	protected int y;
+	protected int int y;
 
 	private boolean eliminado = false;
-	[span_50](start_span)protected Mapa mapa;[span_50](end_span)
+	protected Mapa mapa;
 
 	// Constructor to initialize mapa
 	public Ente(Mapa mapa) {
@@ -27,7 +27,7 @@ public abstract class Ente {
 	}
 
 	public int obtenerPosicionX() {
-		[span_51](start_span)return x;[span_51](end_span)
+		return x;
 	}
 
 	public void modificarPosicionX(int desplazamientoX) {
@@ -39,7 +39,7 @@ public abstract class Ente {
 	}
 
 	public void modificarPosicionY(int desplazamientoY) {
-		[span_52](start_span)y += desplazamientoY;[span_52](end_span)
+		y += desplazamientoY;
 	}
 
 	public boolean estaEliminado() {
