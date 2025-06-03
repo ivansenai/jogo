@@ -4,149 +4,246 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import mapa.cuadro.Cuadro;
+import mapa.cuadro.CuadroVacio; // Importar CuadroVacio
 
 public class MapaCargado extends Mapa {
 
-	private int[] pixeles;
+    private int[] pixeles;
 
-	public MapaCargado(String ruta) {
-		super(ruta); // Chama o construtor de Mapa(String ruta)
-		// A inicialização de ancho, alto e cuadrosCatalogo ocorre em carregarMapa()
-		carregarMapa(ruta);
-		// Não chame gerarMapa() aqui se ele preenche com base em pixels da imagem.
-		// A lógica que estava em generarMapa() de MapaCargado agora está em carregarMapa.
-	}
+    public MapaCargado(String ruta) {
+        super(ruta); // Chama o construtor base de Mapa (que agora não inicializa nada)
+        carregarMapa(ruta);
+        // cuadrosCatalogo já é inicializado em carregarMapa, agora chamar gerarMapa
+        generarMapa();
+    }
 
-	@Override
-	protected void carregarMapa(String ruta) {
-		try {
-			BufferedImage imagem = ImageIO.read(MapaCargado.class.getResourceAsStream(ruta));
-			this.ancho = imagem.getWidth();
-			this.alto = imagem.getHeight();
+    @Override
+    protected void carregarMapa(String ruta) {
+        try {
+            BufferedImage imagem = ImageIO.read(MapaCargado.class.getResourceAsStream(ruta));
+            this.ancho = imagem.getWidth();
+            this.alto = imagem.getHeight();
+            this.pixeles = new int[ancho * alto];
+            imagem.getRGB(0, 0, ancho, alto, this.pixeles, 0, ancho);
 
-			this.pixeles = new int[ancho * alto];
-			imagem.getRGB(0, 0, ancho, alto, this.pixeles, 0, ancho);
+            this.cuadrosCatalogo = new Cuadro[ancho * alto]; // Inicializa cuadrosCatalogo AQUI
+        } catch (IOException e) {
+            System.err.println("ERRO: Não foi possível carregar o mapa de imagem em: " + ruta);
+            e.printStackTrace();
+        }
+    }
 
-			this.cuadrosCatalogo = new Cuadro[ancho * alto]; // Inicializa o array AQUI
-
-			// Lógica para preencher cuadrosCatalogo com base nos pixels da imagem
-			for (int i = 0; i < pixeles.length; i++) {
-				switch (pixeles[i]) {
-					// As cores abaixo devem CORRESPONDER EXATAMENTE aos pixels do seu mapa de imagem
-					case 0xff2A2B2D: // Exemplo de cor para ASFALTO
-						cuadrosCatalogo[i] = Cuadro.ASFALTO;
-						break;
-					case 0xff66BC50: // Exemplo de cor para AREIA
-						cuadrosCatalogo[i] = Cuadro.AREIA;
-						break;
-					case 0xff3F7C00: // Exemplo: cor para GRAMA
-						cuadrosCatalogo[i] = Cuadro.GRAMA;
-						break;
-					case 0xffA3A3A3: // Exemplo: cor para CENTRO_CARRETERA
-						cuadrosCatalogo[i] = Cuadro.CENTRO_CARRETERA;
-						break;
-					case 0xff000000: // Preto para VAZIO ou algum outro padrão
-						cuadrosCatalogo[i] = Cuadro.VACIO;
-						break;
-					case 0xff808080: // Exemplo: Asfalto deitado
-						cuadrosCatalogo[i] = Cuadro.ASFALTO_DEITADO;
-						break;
-					
-					// Adicione todos os outros cases para as cores dos seus tiles de CASA/PAREDES/ETC.
-					// Certifique-se de que cada cor no seu mapa de imagem corresponda a um Cuadro estático.
-					case 0xff7F3300: cuadrosCatalogo[i] = Cuadro.CASA; break;
-					case 0xff994000: cuadrosCatalogo[i] = Cuadro.CASA90; break;
-					case 0xffB24C00: cuadrosCatalogo[i] = Cuadro.CASA180; break;
-					case 0xffCC5900: cuadrosCatalogo[i] = Cuadro.CASA270; break;
-
-					case 0xff522100: cuadrosCatalogo[i] = Cuadro.PAREDE_PEDRA; break;
-					case 0xff6D2D01: cuadrosCatalogo[i] = Cuadro.PAREDE_PEDRA_INVERTIDA; break;
-					
-					case 0xff0080FF: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_CIMA; break;
-					case 0xff0066CC: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_BAIXO; break;
-					case 0xff00BFFF: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_ESQUERDA; break;
-					case 0xff0099FF: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_DIREITA; break;
-					case 0xff004C99: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_CANTO_SUP_ESQ; break;
-					case 0xff003366: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_CANTO_SUP_DIR; break;
-					case 0xff001A33: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_CANTO_INF_ESQ; break;
-					case 0xff000D1A: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_CANTO_INF_DIR; break;
-					case 0xff2E8B57: cuadrosCatalogo[i] = Cuadro.MURO_AGUA_AREIA; break;
-
-					case 0xff2B2E4A: cuadrosCatalogo[i] = Cuadro.SEGURANCA_BAIXO; break;
-					case 0xff4C5182: cuadrosCatalogo[i] = Cuadro.SEGURANCA_CIMA; break;
-					case 0xff6F74B0: cuadrosCatalogo[i] = Cuadro.SEGURANCA_ESQUERDA; break;
-					case 0xff9197DE: cuadrosCatalogo[i] = Cuadro.SEGURANCA_DIREITA; break;
-
-					case 0xff800000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_01; break;
-					case 0xff9A0000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_02; break;
-					case 0xffB40000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_03; break;
-					case 0xffCE0000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_04; break;
-					case 0xffE80000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_05; break;
-					case 0xffFF0000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_BAIXO_06; break;
-					case 0xff008000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_01; break;
-					case 0xff009A00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_02; break;
-					case 0xff00B400: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_03; break;
-					case 0xff00CE00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_04; break;
-					case 0xff00E800: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_05; break;
-					case 0xff00FF00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_CIMA_06; break;
-					case 0xff808000: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_01; break;
-					case 0xff9A9A00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_02; break;
-					case 0xffB4B400: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_03; break;
-					case 0xffCECE00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_04; break;
-					case 0xffE8E800: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_05; break;
-					case 0xffFFFF00: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_DIREITA_06; break;
-					case 0xff800080: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_01; break;
-					case 0xff9A009A: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_02; break;
-					case 0xffB400B4: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_03; break;
-					case 0xffCE00CE: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_04; break;
-					case 0xffE800E8: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_05; break;
-					case 0xffFF00FF: cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ESQUERDA_06; break;
-
-					case 0xff00E3F0: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_01; break;
-					case 0xff00EBE3: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_02; break;
-					case 0xff00F0D5: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_03; break;
-					case 0xff00F7C9: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_04; break;
-					case 0xff00F4BD: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_05; break;
-					case 0xff00F3B1: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_06; break;
-
-					case 0xff00D4C5: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_01; break;
-					case 0xff00C5BA: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_02; break;
-					case 0xff00B7B0: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_03; break;
-					case 0xff00AAA3: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_04; break;
-					case 0xff009C96: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_05; break;
-					case 0xff008F8B: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_CIMA_06; break;
-
-					case 0xff6666FF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_01; break;
-					case 0xff7777FF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_02; break;
-					case 0xff8888FF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_03; break;
-					case 0xff9999FF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_04; break;
-					case 0xffAAAAFF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_05; break;
-					case 0xffBBBBFF: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_DIREITA_06; break;
-
-					case 0xffCC0000: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_01; break; // Duplicado com CASA_MADEIRA_DIREITA_04
-					case 0xffDD0000: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_02; break; // Duplicado
-					case 0xffEE0000: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_03; break; // Duplicado
-					case 0xffFF0000: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_04; break; // Duplicado
-					case 0xff001122: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_05; break;
-					case 0xff334455: cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ESQUERDA_06; break;
-
-					default: // Se uma cor não for mapeada, defina um default
-						cuadrosCatalogo[i] = Cuadro.VACIO; // Ou um Cuadro de erro visual
-						System.out.println("Cor não mapeada no mapa: " + String.format("#%06X", (pixeles[i] & 0xFFFFFF)));
-						break;
-				}
-			}
-
-		} catch (IOException e) {
-			System.err.println("ERRO: Não foi possível carregar o mapa de imagem em: " + ruta);
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	protected void generarMapa() {
-		// Este método fica vazio aqui para MapaCargado, pois a geração é feita pela imagem
-		// A lógica de preenchimento do catálogo de quadros com base nos pixels
-		// já foi movida para carregarMapa().
-	}
+    @Override
+    protected void generarMapa() {
+        for (int i = 0; i < pixeles.length; i++) {
+            switch (pixeles[i]) {
+                case 0xff2A2B2D:
+                    cuadrosCatalogo[i] = Cuadro.ASFALTO;
+                    break;
+                case 0xff66BC50:
+                    cuadrosCatalogo[i] = Cuadro.GRAMA;
+                    break;
+                case 0xff8F918F:
+                    cuadrosCatalogo[i] = Cuadro.CENTRO_CARRETERA;
+                    break;
+                case 0xffC3C7C3:
+                    cuadrosCatalogo[i] = Cuadro.ASFALTO_DEITADO;
+                    break;
+                case 0xffFF19CD:
+                    cuadrosCatalogo[i] = Cuadro.CASA;
+                    break;
+                case 0xffD800A8:
+                    cuadrosCatalogo[i] = Cuadro.CASA90;
+                    break;
+                case 0xffEF00F5:
+                    cuadrosCatalogo[i] = Cuadro.CASA180;
+                    break;
+                case 0xffFF63FF:
+                    cuadrosCatalogo[i] = Cuadro.CASA270;
+                    break;
+                case 0xff273627:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_CASA_ALTO_ESQUERDA;
+                    break;
+                case 0xff5400DC:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_CASA_ALTO_DIREITA;
+                    break;
+                case 0xffA26DFF:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_CASA_BAIXO_ESQUERDA;
+                    break;
+                case 0xffFFE125:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_CASA_BAIXO_DIREITA;
+                    break;
+                case 0xff006ED1:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_1;
+                    break;
+                case 0xffF37600:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_2;
+                    break;
+                case 0xff0018CD:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_3;
+                    break;
+                case 0xffA25500:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_4;
+                    break;
+                case 0xffAC2C00:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_5;
+                    break;
+                case 0xff2000D4:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_6;
+                    break;
+                case 0xffDE5B00:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_7;
+                    break;
+                case 0xff8B00A8:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_8;
+                    break;
+                case 0xff00CFBC:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_9;
+                    break;
+                case 0xffD62F00:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_10;
+                    break;
+                case 0xff6400D1:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_11;
+                    break;
+                case 0xff0094C8:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_12;
+                    break;
+                case 0xffF94A00:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_13;
+                    break;
+                case 0xff002AC9:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_14;
+                    break;
+                case 0xffC70011:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_15;
+                    break;
+                case 0xff7A00C3:
+                    cuadrosCatalogo[i] = Cuadro.PAREDE_16;
+                    break;
+                case 0xff001369:
+                    cuadrosCatalogo[i] = Cuadro.MURO;
+                    break;
+                case 0xff770076:
+                    cuadrosCatalogo[i] = Cuadro.SEGURANCA180;
+                    break;
+                case 0xff2A8400:
+                    cuadrosCatalogo[i] = Cuadro.SEGURANCA90;
+                    break;
+                case 0xffC7FA00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_01;
+                    break;
+                case 0xffEEF800:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_02;
+                    break;
+                case 0xffC0E700:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_03;
+                    break;
+                case 0xffE1D900:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_04;
+                    break;
+                case 0xffE4AB00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_05;
+                    break;
+                case 0xffCCCC00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_06;
+                    break;
+                case 0xffDDFA00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_01;
+                    break;
+                case 0xffF8E400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_02;
+                    break;
+                case 0xffD6E400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_03;
+                    break;
+                case 0xffE5C300:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_04;
+                    break;
+                case 0xffD6B800:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_05;
+                    break;
+                case 0xffADD400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_06;
+                    break;
+                case 0xffB99200:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_01;
+                    break;
+                case 0xffB28400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_02;
+                    break;
+                case 0xffB56900:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_03;
+                    break;
+                case 0xff7D7400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_04;
+                    break;
+                case 0xff8F7600:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_05;
+                    break;
+                case 0xff4B4A00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ABAIXO_ESQUERDA_06;
+                    break;
+                case 0xffB19500:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_01;
+                    break;
+                case 0xffB27600:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_02;
+                    break;
+                case 0xff9A7600:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_03;
+                    break;
+                case 0xff859200:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_04;
+                    break;
+                case 0xff728400:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_05;
+                    break;
+                case 0xff523F00:
+                    cuadrosCatalogo[i] = Cuadro.CASA_MADEIRA_ACIMA_ESQUERDA_06;
+                    break;
+                case 0xff00E3F0:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_01;
+                    break;
+                case 0xff00EBE3:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_02;
+                    break;
+                case 0xff00F0D5:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_03;
+                    break;
+                case 0xff00F7C9:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_04;
+                    break;
+                case 0xff00F4BD:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_05;
+                    break;
+                case 0xff00F3B1:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ABAIXO_06;
+                    break;
+                case 0xff00D7DA:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_01;
+                    break;
+                case 0xff00DFCE:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_02;
+                    break;
+                case 0xff00E4C0:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_03;
+                    break;
+                case 0xff00E1B5:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_04;
+                    break;
+                case 0xff00DEA9:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_05;
+                    break;
+                case 0xff00DE9F:
+                    cuadrosCatalogo[i] = Cuadro.CASA_CIMENTO_ACIMA_06;
+                    break;
+                default:
+                    System.out.println("AVISO: Cor de pixel não mapeada no mapa. Default para VACIO: " + Integer.toHexString(pixeles[i]));
+                    // Usar o construtor correto para CuadroVacio, passando 'true' para solidez
+                    cuadrosCatalogo[i] = new CuadroVacio(graficos.Sprite.VACIO, true); // Corrigido
+                    break;
+            }
+        }
+    }
 }
