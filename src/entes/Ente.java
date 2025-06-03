@@ -7,7 +7,12 @@ public abstract class Ente {
 	protected int y;
 
 	private boolean eliminado = false;
-	protected Mapa mapa;
+	[span_50](start_span)protected Mapa mapa;[span_50](end_span)
+
+	// Constructor to initialize mapa
+	public Ente(Mapa mapa) {
+		this.mapa = mapa;
+	}
 
 	public void actualizar() {
 
@@ -22,7 +27,7 @@ public abstract class Ente {
 	}
 
 	public int obtenerPosicionX() {
-		return x;
+		[span_51](start_span)return x;[span_51](end_span)
 	}
 
 	public void modificarPosicionX(int desplazamientoX) {
@@ -34,10 +39,9 @@ public abstract class Ente {
 	}
 
 	public void modificarPosicionY(int desplazamientoY) {
-		y += desplazamientoY;
+		[span_52](start_span)y += desplazamientoY;[span_52](end_span)
 	}
 
-	
 	public boolean estaEliminado() {
 		return eliminado;
 	}
