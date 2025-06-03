@@ -10,10 +10,11 @@ public abstract class Criatura extends Ente {
 	protected char direccion = 'n';
 	protected boolean enMovimiento = false; // Declarado como protected
 
-	// Construtor que recebe um Mapa
+	// !!! ATENÇÃO: CONSTRUTOR CORRIGIDO !!!
 	public Criatura(Mapa mapa) {
 		super(mapa); // Chama o construtor da superclasse Ente
 	}
+	// !!! FIM DA ATENÇÃO !!!
 
 	@Override
 	public void actualizar() {
@@ -40,11 +41,9 @@ public abstract class Criatura extends Ente {
 		}
 
 		if (!estaEliminado()) {
-			// Verifica colisão apenas no eixo X antes de mover em X
 			if (!enColision(desplazamientoX, 0)) {
 				modificarPosicionX(desplazamientoX);
 			}
-			// Verifica colisão apenas no eixo Y antes de mover em Y
 			if (!enColision(0, desplazamientoY)) {
 				modificarPosicionY(desplazamientoY);
 			}
@@ -71,12 +70,15 @@ public abstract class Criatura extends Ente {
 
 		// Converter as coordenadas de pixel para coordenadas de tile
 		// Cuadro.LADO é o tamanho do tile (ex: 32 pixels)
+		// !!! ATENÇÃO: USANDO Cuadro.LADO E mapa.obtenerCuadro() !!!
 		int tileEsquerda = pixelEsquerda / Cuadro.LADO;
 		int tileDireita = pixelDireita / Cuadro.LADO;
 		int tileCima = pixelCima / Cuadro.LADO;
 		int tileBaixo = pixelBaixo / Cuadro.LADO;
 
 		// Verificar a solidez dos 4 cantos da caixa de colisão
+		// Assumindo que mapa.obtenerCuadro(x, y) retorna um Cuadro
+		// e que Cuadro tem um método esSolido()
 		if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) {
 			colision = true;
 		}
