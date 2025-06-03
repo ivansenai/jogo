@@ -14,7 +14,6 @@ import entes.criaturas.Jogador;
 import graficos.Pantalla;
 import mapa.Mapa;
 import mapa.MapaCargado;
-// import mapa.MapaGenerado; // Descomente e use se quiser gerar um mapa programaticamente
 
 public class Juego extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
