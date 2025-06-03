@@ -1,29 +1,32 @@
 package entes.criaturas;
 
-import control.Teclado;
+import control.Teclado; // Certifique-se de que o pacote control existe
 import graficos.Pantalla;
 import graficos.Sprite;
 import mapa.Mapa;
 
 public class Jogador extends Criatura {
 	private Teclado teclado;
-	private int animacion;
+	private int animacion; // Usado para controle de animação
 
+	// Construtor principal para Jogador
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
-		super(mapa); // Corrigido: Chama o construtor da superclasse Criatura
+		super(mapa); // Chama o construtor da superclasse Criatura que exige um Mapa
 		this.teclado = teclado;
-		this.sprite = sprite;
+		this.sprite = sprite; // Define o sprite inicial do jogador
 	}
 
+	// Construtor auxiliar para facilitar a criação do jogador com posição e sprite padrão
 	public Jogador(Mapa mapa, Teclado teclado, int posicionX, int posicionY) {
-		this(mapa, teclado, Sprite.JOGADOR_BAIXO);
+		this(mapa, teclado, Sprite.JOGADOR_BAIXO); // Usa o construtor acima com sprite padrão
 		this.x = posicionX;
 		this.y = posicionY;
 	}
 
+	@Override
 	public void actualizar() {
-		int desplazamientoX = 0; // Corrigido: Declarado como variável local
-		int desplazamientoY = 0; // Corrigido: Declarado como variável local
+		int desplazamientoX = 0; // Variável local para o deslocamento no eixo X
+		int desplazamientoY = 0; // Variável local para o deslocamento no eixo Y
 		int velocidadeMovimiento = 1;
 
 		if (animacion < 32767) {
@@ -32,33 +35,38 @@ public class Jogador extends Criatura {
 			animacion = 0;
 		}
 
-		if (teclado.isCorrer()) { // Corrigido: Usa getter
+		// Verifica se o jogador está correndo usando o getter do Teclado
+		if (teclado.isCorrer()) {
 			velocidadeMovimiento = 2;
 		}
 
-		if (teclado.isArriba()) { // Corrigido: Usa getter
+		// Atualiza o deslocamento com base nas teclas pressionadas
+		// Usa os getters do Teclado
+		if (teclado.isArriba()) {
 			desplazamentoY -= velocidadeMovimiento;
 		}
-		if (teclado.isAbajo()) { // Corrigido: Usa getter
+		if (teclado.isAbajo()) {
 			desplazamentoY += velocidadeMovimiento;
 		}
-		if (teclado.isIzquierda()) { // Corrigido: Usa getter
+		if (teclado.isIzquierda()) {
 			desplazamentoX -= velocidadeMovimiento;
 		}
-		if (teclado.isDerecha()) { // Corrigido: Usa getter
+		if (teclado.isDerecha()) {
 			desplazamentoX += velocidadeMovimiento;
 		}
 
-		if (desplazamentoX != 0 || desplazamientoY != 0) { // Corrigido: Usa variáveis locais
-			mover(desplazamentoX, desplazamientoY); // Corrigido: Usa variáveis locais
-			enMovimiento = true;
+		// Se houver algum deslocamento, move o jogador
+		if (desplazamentoX != 0 || desplazamientoY != 0) {
+			mover(desplazamentoX, desplazamientoY);
+			enMovimiento = true; // 'enMovimiento' é herdado de Criatura
 		} else {
 			enMovimiento = false;
 		}
 
-		int resto = animacion % 40;
+		// Lógica de animação do jogador baseada na direção e movimento
+		int resto = animacion % 40; // Controla a fase da animação
 
-		if (direccion == 'n') { // Cima
+		if (direccion == 'n') { // Norte (Cima)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_CIMA_1;
@@ -72,8 +80,7 @@ public class Jogador extends Criatura {
 			} else {
 				sprite = Sprite.JOGADOR_CIMA;
 			}
-		}
-		if (direccion == 's') { // Baixo
+		} else if (direccion == 's') { // Sul (Baixo)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_BAIXO_1;
@@ -87,8 +94,7 @@ public class Jogador extends Criatura {
 			} else {
 				sprite = Sprite.JOGADOR_BAIXO;
 			}
-		}
-		if (direccion == 'o') { // Esquerda
+		} else if (direccion == 'o') { // Oeste (Esquerda)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_ESQUERDA_1;
@@ -102,9 +108,8 @@ public class Jogador extends Criatura {
 			} else {
 				sprite = Sprite.JOGADOR_ESQUERDA;
 			}
-		}
-		if (direccion == 'e') { // Direita
-			if (enMovimento) {
+		} else if (direccion == 'e') { // Leste (Direita)
+			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_DIREITA_1;
 				} else if ((resto > 20) && (resto <= 30)) {
@@ -121,6 +126,7 @@ public class Jogador extends Criatura {
 	}
 
 	public void mostrar(Pantalla pantalla) {
+		// Delega a exibição do jogador para a classe Pantalla
 		pantalla.mostrarJogador(x, y, this);
 	}
 }
