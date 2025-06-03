@@ -25,10 +25,9 @@ public class Jogador extends Criatura {
 
 	@Override
 	public void actualizar() {
-
+		// Declaração correta das variáveis locais de deslocamento
 		int desplazamientoX = 0;
 		int desplazamientoY = 0;
-		// !!! FIM DA ATENÇÃO !!!
 
 		int velocidadeMovimiento = 1;
 
@@ -39,20 +38,20 @@ public class Jogador extends Criatura {
 		}
 
 		// Acesso corrigido aos estados do teclado usando os MÉTODOS GETTERS
-		if (teclado.isCorrer()) { // Corrigido de teclado.correr
+		if (teclado.isCorrer()) { 
 			velocidadeMovimiento = 2;
 		}
 
-		if (teclado.isArriba()) { // Corrigido de teclado.arriba
+		if (teclado.isArriba()) { 
 			desplazamentoY -= velocidadeMovimiento;
 		}
-		if (teclado.isAbajo()) { // Corrigido de teclado.abajo
+		if (teclado.isAbajo()) { 
 			desplazamentoY += velocidadeMovimiento;
 		}
-		if (teclado.isIzquierda()) { // Corrigido de teclado.izquierda
+		if (teclado.isIzquierda()) { 
 			desplazamentoX -= velocidadeMovimiento;
 		}
-		if (teclado.isDerecha()) { // Corrigido de teclado.derecha
+		if (teclado.isDerecha()) { 
 			desplazamentoX += velocidadeMovimiento;
 		}
 
