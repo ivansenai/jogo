@@ -26,7 +26,7 @@ public class Jogador extends Ente {
 	}
 
 	@Override
-	public void actualizar() {
+	public void actualizar()  {
 		// Declaração correta das variáveis locais de deslocamento
 		int desplazamientoX = 0;
 		int desplazamientoY = 0;
