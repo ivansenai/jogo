@@ -1,6 +1,6 @@
 package entes;
 
-import mapa.Mapa;
+import mapa.Mapa; // Certifique-se de que o pacote mapa existe
 
 public abstract class Ente {
 	protected int x;
@@ -9,17 +9,17 @@ public abstract class Ente {
 	private boolean eliminado = false;
 	protected Mapa mapa;
 
-	// Constructor to initialize mapa
+	// Construtor para inicializar o mapa
 	public Ente(Mapa mapa) {
 		this.mapa = mapa;
 	}
 
 	public void actualizar() {
-
+		// As subclasses devem implementar a lógica de atualização
 	}
 
 	public void mostrar() {
-
+		// As subclasses devem implementar a lógica de exibição
 	}
 
 	public void eliminar() {
