@@ -38,22 +38,22 @@ public class Jogador extends Criatura {
 			animacion = 0;
 		}
 
-		// Acesso corrigido aos estados do teclado usando os métodos getters
-		if (teclado.isCorrer()) {
+		// Acesso corrigido aos estados do teclado usando os MÉTODOS GETTERS
+		if (teclado.isCorrer()) { // Corrigido de teclado.correr
 			velocidadeMovimiento = 2;
 		}
 
-		if (teclado.isArriba()) {
-			desplazamentoY -= velocidadeMovimiento; // Usa -= para diminuir Y
+		if (teclado.isArriba()) { // Corrigido de teclado.arriba
+			desplazamentoY -= velocidadeMovimiento;
 		}
-		if (teclado.isAbajo()) {
-			desplazamentoY += velocidadeMovimiento; // Usa += para aumentar Y
+		if (teclado.isAbajo()) { // Corrigido de teclado.abajo
+			desplazamentoY += velocidadeMovimiento;
 		}
-		if (teclado.isIzquierda()) {
-			desplazamentoX -= velocidadeMovimiento; // Usa -= para diminuir X
+		if (teclado.isIzquierda()) { // Corrigido de teclado.izquierda
+			desplazamentoX -= velocidadeMovimiento;
 		}
-		if (teclado.isDerecha()) {
-			desplazamentoX += velocidadeMovimiento; // Usa += para aumentar X
+		if (teclado.isDerecha()) { // Corrigido de teclado.derecha
+			desplazamentoX += velocidadeMovimiento;
 		}
 
 		// Move o jogador se houver deslocamento
@@ -96,7 +96,7 @@ public class Jogador extends Criatura {
 			} else {
 				sprite = Sprite.JOGADOR_BAIXO;
 			}
-		} else if (direccion == 'o') { // Esquerda
+		} else if (direccion == 'o') { // Oeste (Esquerda)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_ESQUERDA_1;
@@ -110,7 +110,7 @@ public class Jogador extends Criatura {
 			} else {
 				sprite = Sprite.JOGADOR_ESQUERDA;
 			}
-		} else if (direccion == 'e') { // Direita
+		} else if (direccion == 'e') { // Leste (Direita)
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_DIREITA_1;
