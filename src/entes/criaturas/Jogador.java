@@ -5,7 +5,7 @@ import graficos.Pantalla;
 import graficos.Sprite;
 import mapa.Mapa;
 
-public class Jogador extends Entes {
+public class Jogador extends Ente {
 	private Teclado teclado;
 	private int animacion;
 
