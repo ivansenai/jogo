@@ -13,7 +13,7 @@ import control.Teclado;
 import entes.criaturas.Jogador;
 import graficos.Pantalla;
 import mapa.Mapa;
-import mapa.MapaCargado; // Ou MapaGenerado
+import mapa.MapaCargado;
 
 public class Juego extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
