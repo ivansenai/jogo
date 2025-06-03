@@ -10,21 +10,20 @@ public class Jogador extends Criatura {
 	private int animacion;
 
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
-		this.mapa = mapa;
+		super(mapa); // Corrigido: Chama o construtor da superclasse Criatura
 		this.teclado = teclado;
-		this.sprite = sprite; // O sprite inicial pode ser passado no construtor
+		this.sprite = sprite;
 	}
 
 	public Jogador(Mapa mapa, Teclado teclado, int posicionX, int posicionY) {
-		// Chama o construtor anterior com um sprite padrão para iniciar
 		this(mapa, teclado, Sprite.JOGADOR_BAIXO);
 		this.x = posicionX;
 		this.y = posicionY;
 	}
 
 	public void actualizar() {
-		int desplazamientoX = 0;
-		int desplazamientoY = 0;
+		int desplazamientoX = 0; // Corrigido: Declarado como variável local
+		int desplazamientoY = 0; // Corrigido: Declarado como variável local
 		int velocidadeMovimiento = 1;
 
 		if (animacion < 32767) {
@@ -33,25 +32,25 @@ public class Jogador extends Criatura {
 			animacion = 0;
 		}
 
-		if (teclado.correr) {
+		if (teclado.isCorrer()) { // Corrigido: Usa getter
 			velocidadeMovimiento = 2;
 		}
 
-		if (teclado.arriba) {
-			desplazamientoY -= velocidadeMovimiento;
+		if (teclado.isArriba()) { // Corrigido: Usa getter
+			desplazamentoY -= velocidadeMovimiento;
 		}
-		if (teclado.abajo) {
-			desplazamientoY += velocidadeMovimiento;
+		if (teclado.isAbajo()) { // Corrigido: Usa getter
+			desplazamentoY += velocidadeMovimiento;
 		}
-		if (teclado.izquierda) {
-			desplazamientoX -= velocidadeMovimiento;
+		if (teclado.isIzquierda()) { // Corrigido: Usa getter
+			desplazamentoX -= velocidadeMovimiento;
 		}
-		if (teclado.derecha) {
+		if (teclado.isDerecha()) { // Corrigido: Usa getter
 			desplazamentoX += velocidadeMovimiento;
 		}
 
-		if (desplazamentoX != 0 || desplazamientoY != 0) {
-			mover(desplazamentoX, desplazamientoY);
+		if (desplazamentoX != 0 || desplazamientoY != 0) { // Corrigido: Usa variáveis locais
+			mover(desplazamentoX, desplazamientoY); // Corrigido: Usa variáveis locais
 			enMovimiento = true;
 		} else {
 			enMovimiento = false;
@@ -62,11 +61,11 @@ public class Jogador extends Criatura {
 		if (direccion == 'n') { // Cima
 			if (enMovimiento) {
 				if ((resto > 10) && (resto <= 20)) {
-					sprite = Sprite.JOGADOR_CIMA_1; // Usando sprite de animação como "cirene vermelha"
+					sprite = Sprite.JOGADOR_CIMA_1;
 				} else if ((resto > 20) && (resto <= 30)) {
-					sprite = Sprite.JOGADOR_CIMA_2; // Usando sprite de animação como "cirene branca"
+					sprite = Sprite.JOGADOR_CIMA_2;
 				} else if (resto > 30) {
-					sprite = Sprite.JOGADOR_CIMA_1; // Usando sprite de animação como "cirene azul"
+					sprite = Sprite.JOGADOR_CIMA_1;
 				} else {
 					sprite = Sprite.JOGADOR_CIMA;
 				}
@@ -105,7 +104,7 @@ public class Jogador extends Criatura {
 			}
 		}
 		if (direccion == 'e') { // Direita
-			if (enMovimiento) {
+			if (enMovimento) {
 				if ((resto > 10) && (resto <= 20)) {
 					sprite = Sprite.JOGADOR_DIREITA_1;
 				} else if ((resto > 20) && (resto <= 30)) {
