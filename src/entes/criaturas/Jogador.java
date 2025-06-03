@@ -11,7 +11,7 @@ public class Jogador extends Criatura {
 
 	// Construtor principal para Jogador
 	public Jogador(Mapa mapa, Teclado teclado, Sprite sprite) {
-		super(mapa); // !!! ESSENCIAL: CHAMA O CONSTRUTOR DA SUPERCLASSE CRIATURA !!!
+		super(mapa); 
 		this.teclado = teclado;
 		this.sprite = sprite;
 	}
@@ -25,7 +25,7 @@ public class Jogador extends Criatura {
 
 	@Override
 	public void actualizar() {
-		// !!! ATENÇÃO: DECLARAÇÃO CORRETA DAS VARIÁVEIS LOCAIS DE DESLOCAMENTO !!!
+
 		int desplazamientoX = 0;
 		int desplazamientoY = 0;
 		// !!! FIM DA ATENÇÃO !!!
