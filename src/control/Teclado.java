@@ -11,7 +11,7 @@ public final class Teclado implements KeyListener {
     private boolean arriba;
     private boolean abajo;
     private boolean izquierda;
-    private boolean derecha; // Padronizado para 'derecha'
+    private boolean derecha; 
     private boolean correr;
     private boolean salir;
 
