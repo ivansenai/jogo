@@ -39,7 +39,7 @@ public abstract class Mapa {
         // ou pode ser vazia se o mapa não tiver elementos dinâmicos para atualizar.
     }
 
-    public void mostrar(final int compensacionX, final int compensacionY, final Pantalla pantalla) {
+    public void mostrar( int compensacionX, int compensacionY,  Pantalla pantalla) {
         pantalla.estableceDiferenca(compensacionX, compensacionY);
         // Calcula os offsets em termos de tiles (assumindo Cuadro.LADO = 32)
         int offsetX = compensacionX >> 5; // Equivalente a compensacionX / 32
