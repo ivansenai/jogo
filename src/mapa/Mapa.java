@@ -1,6 +1,6 @@
 package mapa;
 
-import graficos.Pantalla; // Certifique-se de que o pacote graficos existe
+import graficos.Patalla; // Certifique-se de que o pacote graficos existe
 import mapa.cuadro.Cuadro; // Importação essencial para Cuadro.LADO e Cuadro.VACIO
 import mapa.cuadro.CuadroVacio; // Importar CuadroVacio
 
@@ -40,7 +40,7 @@ public abstract class Mapa {
     }
 
     public void mostrar( int compensacionX, int compensacionY,  Pantalla pantalla) {
-        pantalla.estableceDiferenca(compensacionX, compensacionY);
+        pantalla.estableceDiferencia(compensacionX, compensacionY);
         // Calcula os offsets em termos de tiles (assumindo Cuadro.LADO = 32)
         int offsetX = compensacionX >> 5; // Equivalente a compensacionX / 32
         int offsetY = compensacionY >> 5; // Equivalente a compensacionY / 32
