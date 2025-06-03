@@ -1,7 +1,7 @@
 package mapa.cuadro;
 
 import graficos.Pantalla;
-import graficos.Sprite;package mapa.cuadro;
+import graficos.Sprite;
 
 import graficos.Pantalla;
 import graficos.Sprite;
