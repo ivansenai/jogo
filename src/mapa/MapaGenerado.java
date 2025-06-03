@@ -14,7 +14,7 @@ public class MapaGenerado extends Mapa {
 	protected void generarMapa() {
 		for (int y = 0; y < alto; y++) {
 			for (int x = 0; x < ancho; x++) {
-				int tipoCuadro = aleatorio.nextInt(4);
+				int tipoCuadro = aleatorio.nextInt(4); // Gera um número de 0 a 3
 
 				switch (tipoCuadro) {
 					case 0:
