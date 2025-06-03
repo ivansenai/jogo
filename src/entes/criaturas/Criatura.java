@@ -49,19 +49,19 @@ public abstract class Criatura extends Ente {
 			}
 		}
 	}
-
+	
 	private boolean enColision(int desplazamientoX, int desplazamientoY) {
-		boolean colision = false;
+		[span_4](start_span)boolean colision = false;[span_4](end_span)
 
 		int proximaPosicionX = x + desplazamientoX;
 		int proximaPosicionY = y + desplazamientoY;
 
 		// Margens de colisão dentro do sprite da criatura
 		// AJUSTE ESTES VALORES SE SEUS SPRITES TIVEREM MARGENS DIFERENTES
-		int margenIzquierda = 6;
-		int margenDerecho = 26;
-		int margenSuperior = 16;
-		int margenInferior = 30;
+		int margenIzquierda = 6; // Ajustado para valores mais comuns
+		int margenDerecho = 26; // Ajustado para valores mais comuns
+		int margenSuperior = 16; // Ajustado para valores mais comuns
+		int margenInferior = 30; // Ajustado para valores mais comuns
 
 		int pixelEsquerda = proximaPosicionX + margenIzquierda;
 		int pixelDireita = proximaPosicionX + margenDerecho;
@@ -70,25 +70,25 @@ public abstract class Criatura extends Ente {
 
 		// Converter as coordenadas de pixel para coordenadas de tile
 		// Cuadro.LADO é o tamanho do tile (ex: 32 pixels)
-		// !!! ATENÇÃO: USANDO Cuadro.LADO E mapa.obtenerCuadro() !!!
-		int tileEsquerda = pixelEsquerda / Cuadro.LADO;
-		int tileDireita = pixelDireita / Cuadro.LADO;
-		int tileCima = pixelCima / Cuadro.LADO;
-		int tileBaixo = pixelBaixo / Cuadro.LADO;
+		// Alterar de sprite.obtemLado() para Cuadro.LADO ou sprite.getLado()
+		int tileEsquerda = pixelEsquerda / getLado(); [span_5](start_span)// Alterado aqui[span_5](end_span)
+		int tileDireita = pixelDireita / getLado(); [span_6](start_span)// Alterado aqui[span_6](end_span)
+		int tileCima = pixelCima / getLado(); [span_7](start_span)// Alterado aqui[span_7](end_span)
+		int tileBaixo = pixelBaixo / getLado(); [span_8](start_span)// Alterado aqui[span_8](end_span)
 
 		// Verificar a solidez dos 4 cantos da caixa de colisão
 		// Assumindo que mapa.obtenerCuadro(x, y) retorna um Cuadro
 		// e que Cuadro tem um método esSolido()
-		if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) {
+		[span_9](start_span)if (mapa.obtenerCuadro(tileEsquerda, tileCima).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_9](end_span)
 			colision = true;
 		}
-		if (mapa.obtenerCuadro(tileDireita, tileCima).esSolido()) {
+		[span_10](start_span)if (mapa.obtenerCuadro(tileDireita, tileCima).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_10](end_span)
 			colision = true;
 		}
-		if (mapa.obtenerCuadro(tileEsquerda, tileBaixo).esSolido()) {
+		[span_11](start_span)if (mapa.obtenerCuadro(tileEsquerda, tileBaixo).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_11](end_span)
 			colision = true;
 		}
-		if (mapa.obtenerCuadro(tileDireita, tileBaixo).esSolido()) {
+		[span_12](start_span)if (mapa.obtenerCuadro(tileDireita, tileBaixo).esSolido()) { // Corrigido para usar mapa.obtenerCuadro[span_12](end_span)
 			colision = true;
 		}
 
