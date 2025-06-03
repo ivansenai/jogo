@@ -127,7 +127,7 @@ public class Jogador extends Criatura {
 		}
 	}
 
-	@Override
+	
 	public void mostrar(Pantalla pantalla) {
 		pantalla.mostrarJogador(x, y, this);
 	}
